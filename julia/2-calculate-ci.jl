@@ -11,8 +11,6 @@ scn0 = Scenario(m, (0., 120.); parameters = [
 ], observables = [
     :drug_c,
     :pd_output_1,
-], saveat = [
-    1., 2., 4., 8., 24., 48., 96.,
 ], events_save = (false, false))
 res0 = sim(scn0)
 add_scenarios!(p, [:scn0=>scn0])
@@ -21,7 +19,7 @@ long_df = read_measurements("data/data-synthetic-known-sigma.csv", DataFrame)
 
 # add data to platform
 add_measurements!(p, long_df)
-fig0 = plot(res0)
+fig0 = plot(res0, legend = false, grid = false)
 savefig(fig0, "output/true-vs-synthetic.png")
 
 # loss function
@@ -41,10 +39,11 @@ to_fit = [
     #:sigma2 => 0.1,
 ]
 res_optim = HetaSimulator.fit(p, to_fit) # 17.50
-res_optim = HetaSimulator.fit(p, optim(res_optim)) # 17.42
+res_optim = HetaSimulator.fit(p, optim(res_optim)) # 17.405
 params_optim = optim(res_optim)
 
-fig0 = sim(p; parameters = params_optim) |> plot
+res0 = sim(p; parameters = params_optim) 
+fig0 = plot(res0, legend = false, grid = false)
 savefig(fig0, "output/fitted-vs-synthetic.png")
 save_as_heta("data/fitted-params.heta", res_optim)
 

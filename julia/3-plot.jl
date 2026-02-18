@@ -1,12 +1,10 @@
-using HetaSimulator, Plots, StatsPlots
+using Plots, StatsPlots
 using CSV, DataFrames
 plotlyjs()
 
-base_path = "_drafts/identifiability post/"
+## plot fig 1C,2C 
 
-## plot fig 2
-
-intervals_df = CSV.read(base_path * "identifiability-intervals.csv", DataFrame)
+intervals_df = CSV.read("output/identifiability-intervals.csv", DataFrame)
 
 # forest plot
 x = log10.(intervals_df.optimal)
@@ -38,7 +36,7 @@ fig2c = scatter(x, y,
 
      markercolor = :grey
 )
-savefig(fig2c, base_path * "identifiability-intervals-forest-plot-1.png")
+savefig(fig2c, "output/1C-identifiability-intervals-forest-plot.png")
 
 fig2c = scatter(x, y,
     xerror = (xerr_left, xerr_right),
@@ -62,4 +60,4 @@ fig2c = scatter(x, y,
 
      markercolor = [:green, :green, :green, :green, :red, :red, :red, :red, :red, :red]
 )
-savefig(fig2c, base_path * "identifiability-intervals-forest-plot-2.png")
+savefig(fig2c, "output/2C-identifiability-intervals-forest-plot.png")
