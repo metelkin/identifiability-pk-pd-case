@@ -1,10 +1,8 @@
-using CICOBase
 using HetaSimulator, Plots, StatsPlots
 using CSV, DataFrames
+using CICOBase
 
-base_path = "_drafts/identifiability post/"
-
-p = load_platform("models/01-multicompartment-pkpd")
+p = load_platform("model")
 m = p |> models |> first |> last
 
 scn0 = Scenario(m, (0., 120.); parameters = [
@@ -19,12 +17,12 @@ scn0 = Scenario(m, (0., 120.); parameters = [
 res0 = sim(scn0)
 add_scenarios!(p, [:scn0=>scn0])
 
-long_df = read_measurements(base_path * "data-synthetic-known-sigma.csv", DataFrame)
+long_df = read_measurements("data/data-synthetic-known-sigma.csv", DataFrame)
 
 # add data to platform
 add_measurements!(p, long_df)
 fig0 = plot(res0)
-savefig(fig0, base_path * "true-vs-synthetic-output.png")
+savefig(fig0, "output/true-vs-synthetic.png")
 
 # loss function
 to_fit = [
@@ -43,13 +41,12 @@ to_fit = [
     #:sigma2 => 0.1,
 ]
 res_optim = HetaSimulator.fit(p, to_fit) # 17.50
-res_optim = HetaSimulator.fit(p, optim(res_optim)) # 17.43
 res_optim = HetaSimulator.fit(p, optim(res_optim)) # 17.42
 params_optim = optim(res_optim)
 
 fig0 = sim(p; parameters = params_optim) |> plot
-savefig(fig0, base_path * "fitted-output.png")
-save_as_heta(base_path * "fitted-params.heta", res_optim)
+savefig(fig0, "output/fitted-vs-synthetic.png")
+save_as_heta("data/fitted-params.heta", res_optim)
 
 est = estimator(p, params_optim;
     alg = Rodas5P(), # AutoTsit5(Rosenbrock23()) Rodas5P() FBDF() or QNDF()  CVODE_BDF()
@@ -87,6 +84,7 @@ intervals_df = DataFrame(
     status_lower = [x.result[1].status for x in intervals],
     status_upper = [x.result[2].status for x in intervals],
 )
+intervals_df.true_value = [p[2] for p in to_fit]
 
-CSV.write(base_path * "identifiability-intervals.csv", intervals_df; transform=(col, val) -> something(val, missing))
+CSV.write("output/identifiability-intervals.csv", intervals_df; transform=(col, val) -> something(val, missing))
 
