@@ -1,0 +1,41 @@
+{
+    "type": "DigiPopVariability",
+    "size": 1024,
+    "parameters": [
+        {
+            "name": "Vc_0",
+            "distribution": "lognormal",
+            "parameters": [5.5, 0.1]
+        },
+        {
+            "name": "kel",
+            "distribution": "lognormal",
+            "parameters": [3e-1, 1e-1]
+        },
+        {
+            "name": "kdist_p",
+            "distribution": "lognormal",
+            "parameters": [7e-1, 1e-1]
+        },
+        {
+            "name": "kdist_t",
+            "distribution": "lognormal",
+            "parameters": [1e-2, 1e-1]
+        },
+        {
+            "name": "Emin_1",
+            "distribution": "lognormal",
+            "parameters": [5, 1e-1]
+        },
+        {
+            "name": "Emax_1",
+            "distribution": "lognormal",
+            "parameters": [10, 1e-1]
+        },
+        {
+            "name": "EC50_1",
+            "distribution": "lognormal",
+            "parameters": [0.8, 1e-1]
+        }
+    ]
+}

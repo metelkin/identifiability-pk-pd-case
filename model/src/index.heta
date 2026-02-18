@@ -1,0 +1,55 @@
+/*
+  Three compartment PK model + Oral absorption
+  PD model with Emax
+*/
+
+// add qsp units
+//include ./qsp-units.heta
+
+/* pharmacokinetic part */
+
+// multy-compartment model
+Vgut 'Gut' @Compartment .= 1; // unsensitive
+Vc 'Central compartment, blood' @Compartment .= Vc_0;
+Vp 'Volume of perefery' @Compartment .= 10;  // unsensitive
+Vt 'Volume of target' @Compartment .= 1;   // unsensitive
+
+drug_gut @Species {amount: true, compartment: Vgut, output: true} .= 0;
+drug_c @Species {compartment: Vc, output: true} .= 0;
+drug_p @Species {compartment: Vp, output: true} .= 0;
+drug_t @Species {compartment: Vt, output: true} .= 0;
+
+vabs @Reaction {actors: drug_gut => drug_c} := kabs * drug_gut;
+vcl @Reaction {actors: drug_c =>} := kel * drug_c * Vc;
+vdist_p @Reaction {actors: drug_c <=> drug_p} := kdist_p * (drug_c - drug_p/K_p) * Vc;
+vdist_t @Reaction {actors: drug_c <=> drug_t} := kdist_t * (drug_c - drug_t/K_t) * Vc;
+
+Vc_0 @Const = 5.5;     // variation
+kabs @Const = 6e0;
+kel @Const = 3e-1;     // variation
+kdist_p @Const = 7e-1; // variation
+K_p @Const = 1.5;
+kdist_t @Const = 1e-2; // variation
+K_t @Const = 2.5;
+
+/* doses */
+period1 @Const = 12;
+sw1 @TimeSwitcher {
+  start: 0,
+  period: period1
+};
+drug_gut [sw1]= dose1;
+dose1 @Const = 10;
+
+/* pharmacodynamic part */
+
+pd_output_1 @Record {output: true} := Emin_1 + Emax_1 * drug_t^h_1/(drug_t^h_1 + EC50_1^h_1);
+
+Emin_1 @Const = 5;  // variation
+Emax_1 @Const = 10;  // variation
+h_1 @Const = 1.2; 
+EC50_1 @Const = 0.8; // variation
+
+/* noise */
+sigma1 @Const = 0.5; // variation
+sigma2 @Const = 0.5; // variation

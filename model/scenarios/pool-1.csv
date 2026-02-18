@@ -1,0 +1,5 @@
+id,model,tspan,saveat[],parameters.dose1,parameters.period1,events_save.sw1,observables[]
+scn1,nameless,120,0;2;4;8;12;24;48;72;120,0,12,0;0,drug_c;pd_output_1
+scn2,nameless,120,0;2;4;8;12;24;48;72;120,10,12,0;0,drug_c;pd_output_1
+scn3,nameless,120,0;2;4;8;12;24;48;72;120,30,12,0;0,drug_c;pd_output_1
+scn4,nameless,120,0;2;4;8;12;24;48;72;120,100,12,0;0,drug_c;pd_output_1

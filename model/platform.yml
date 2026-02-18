@@ -1,0 +1,22 @@
+{
+  "builderVersion": "^0.10.0",
+  "id": "01-multicompartment-pkpd",
+  "notes": "Model from the DigiPop project to use for testing and demo.",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/hetalang/DigiPopRecipes"
+  },
+  "version": "v0.1.0",
+  "license": "MIT",
+  "contributors": ["metelkin.me"],
+  "options": {},
+  "importModule": {
+    "type": "heta",
+    "source": "src/index.heta"
+  },
+  "export": [
+    { format: "JSON" },
+    #{ format: "Julia" },
+    { format: "Dot" }
+  ]
+}
