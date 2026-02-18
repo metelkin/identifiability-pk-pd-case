@@ -31,7 +31,7 @@ res0_df[!, :drug_c] = res0_df.drug_c .* exp.(norm1)
 res0_df[!, :pd_output_1] = res0_df.pd_output_1 .+ norm2
 
 fig1 = @df res0_df plot(:t, [:drug_c, :pd_output_1], label=["drug_c" "pd_output_1"], seriestype=:scatter)
-savefig(fig1, "output/noisy-output.png")
+savefig(fig1, "output/1A-noisy-output.png")
 
 # save the simulated data in experimental data format
 long_df = stack(res0_df, [:drug_c, :pd_output_1], variable_name="prob.mean", value_name="measurement")

@@ -44,7 +44,7 @@ params_optim = optim(res_optim)
 
 res0 = sim(p; parameters = params_optim) 
 fig0 = plot(res0, legend = false, grid = false)
-savefig(fig0, "output/fitted-vs-synthetic.png")
+savefig(fig0, "output/1D-fitted-vs-synthetic.png")
 save_as_heta("data/fitted-params.heta", res_optim)
 
 est = estimator(p, params_optim;
