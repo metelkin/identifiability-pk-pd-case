@@ -106,11 +106,11 @@ prediction_bands_df = DataFrame(
 )
 for out in [:drug_c, :pd_output_1]
     #out = :pd_output_1
-    println("Calculating prediction bands for output: ", out)
+    println("Calculating prediction bands for output: ", out, "\n")
 
     for t_i in time_points
         # t_i = 0.05
-        println("\tCalculating interval for time point: ", t_i)
+        println("\tCalculating interval for time point: ", t_i, "\n")
 
         scan_fun_i = scan_factory(t_i, out)
 
