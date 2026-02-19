@@ -100,6 +100,7 @@ prediction_bands_df = DataFrame(
     time_point = Float64[],
     lower_bound = Union{Nothing, Float64}[],
     lower_status = Symbol[],
+    optimal = Union{Nothing, Float64}[],
     upper_bound = Union{Nothing, Float64}[],
     upper_status = Symbol[],
     output = Symbol[],
@@ -129,11 +130,15 @@ for out in [:drug_c, :pd_output_1]
         left = interval_i.result[1]
         right = interval_i.result[2]
 
+        # claculate optimal
+        optimal = scan_fun_i(params_opt)
+
         # store results
         push!(prediction_bands_df, (
             time_point = t_i,
             lower_bound = left.value,
             lower_status = left.status,
+            optimal = optimal,
             upper_bound = right.value,
             upper_status = right.status,
             output = out,
