@@ -80,8 +80,8 @@ intervals_df = DataFrame(
     lower_bound = [x.result[1].value for x in intervals],
     optimal = values_optim,
     upper_bound = [x.result[2].value for x in intervals],
-    status_lower = [x.result[1].status for x in intervals],
-    status_upper = [x.result[2].status for x in intervals],
+    lower_status = [x.result[1].status for x in intervals],
+    upper_status = [x.result[2].status for x in intervals],
 )
 intervals_df.true_value = [p[2] for p in to_fit]
 
