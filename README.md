@@ -19,3 +19,8 @@ mkdir -p model
 cp -r tmp_repo/models/01-multicompartment-pkpd/* model/
 rm -rf tmp_repo
 ```
+
+$$
+\frac{d\mathbf{x}}{dt} = f\left(\mathbf{x}, \mathbf{\theta}\right)\\
+\mathbf{y} = g\left(\mathbf{x}, \mathbf{\theta}\right)
+$$

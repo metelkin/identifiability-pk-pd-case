@@ -27,3 +27,25 @@ end
 fig2e
 
 savefig(fig2e, "output/2E-predicted.png")
+
+## fig 2D
+
+prediction_bands_df_2 = CSV.read("output/prediction-bands-2.csv", DataFrame)
+
+fig2d = plot(
+    xlabel = "Time",
+    ylabel = "Output",
+    xlim = (0., 120.),
+    ylim = (0., 25.),
+)
+for subdf in groupby(prediction_bands_df_2, :output)
+    plot!(fig2d, subdf.time_point, subdf.optimal;
+        ribbon = (subdf.optimal .- subdf.lower_bound, subdf.upper_bound .- subdf.optimal),
+        legend = false,
+        grid = false,
+        fillalpha = 0.3,
+        linewidth = 1
+    )
+end
+fig2d
+savefig(fig2d, "output/2D-predicted.png")

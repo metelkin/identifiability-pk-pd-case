@@ -148,3 +148,81 @@ end
 
 #save
 CSV.write("output/prediction-bands.csv", prediction_bands_df; transform=(col, val) -> something(val, missing))
+
+### Analyze prediction bands 2 ###
+
+# create scan function
+function scan_factory_2(time_point, output)
+    scn = Scenario(m, (0., time_point); parameters = [
+        :dose1 => 100.,
+        :period1 => 0.,
+    ], observables = [
+        output,
+    ], saveat = [0, time_point], events_save = (false, false))
+
+    function scan_func(x)
+        pairs = first.(params_opt_pairs) .=> x
+        res = sim(scn; 
+            parameters = pairs,     
+            alg = Rodas5P(),
+            abstol = 1e-9,
+            reltol = 1e-6
+        )
+        res_df = res |> DataFrame
+        target = res_df[2, output]
+        return target
+    end
+end
+
+prediction_bands_df_2 = DataFrame(
+    time_point = Float64[],
+    lower_bound = Union{Nothing, Float64}[],
+    lower_status = Symbol[],
+    optimal = Union{Nothing, Float64}[],
+    upper_bound = Union{Nothing, Float64}[],
+    upper_status = Symbol[],
+    output = Symbol[],
+)
+for out in [:drug_c, :pd_output_1]
+    #out = :pd_output_1
+    println("Calculating prediction bands for output: ", out, "\n")
+
+    for t_i in time_points
+        # t_i = 0.05
+        println("\tCalculating interval for time point: ", t_i, "\n")
+
+        scan_fun_i = scan_factory_2(t_i, out)
+
+        # calc band
+        interval_i = get_interval(
+            params_opt, # theta_init
+            scan_fun_i, # scan_func
+            est, # loss_func
+            :CICO_ONE_PASS, # method
+
+            loss_crit = optimum + 3.84,
+            scan_bounds = (1e-5, 30.0),
+            scale = fill(:log, length(params_opt))
+        )
+
+        left = interval_i.result[1]
+        right = interval_i.result[2]
+
+        # claculate optimal
+        optimal = scan_fun_i(params_opt)
+
+        # store results
+        push!(prediction_bands_df_2, (
+            time_point = t_i,
+            lower_bound = left.value,
+            lower_status = left.status,
+            optimal = optimal,
+            upper_bound = right.value,
+            upper_status = right.status,
+            output = out,
+        ))
+    end
+end
+
+#save
+CSV.write("output/prediction-bands-2.csv", prediction_bands_df_2; transform=(col, val) -> something(val, missing))
