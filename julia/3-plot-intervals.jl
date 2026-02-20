@@ -1,6 +1,7 @@
 using Plots, StatsPlots
 using CSV, DataFrames
-plotlyjs()
+#plotlyjs()
+#gr()
 
 ## plot fig 1C,2C 
 
@@ -14,50 +15,54 @@ xerr_left  = x .- (ifelse.(ismissing.(intervals_df.lower_bound), 1e-4, intervals
 xerr_right = (ifelse.(ismissing.(intervals_df.upper_bound), 1e4, intervals_df.upper_bound) .|> log10) .- x
 
 # Create plot
-fig2c = scatter(x, y,
+using LaTeXStrings
+ylabels = [L"\theta_{%$i}" for i in 1:nrow(intervals_df)]
+fig2c = scatter(x, y;
     #xerror = (xerr_left, xerr_right),
     yflip = true,
     legend = false,
     grid = false,
-    foreground_color_axis = :transparent,
-
-    yticks = (y, string.(intervals_df.parameter)),
-
-    tick_direction = :none,# remove tick marks
-
+    yforeground_color_axis = :transparent,
+    yticks = (y, ylabels),
+    ytick_direction = :none,# remove tick marks
     #xaxis = false,
-    markersize = 4,
     markerstrokewidth = 2,
-    tickfontsize = 12,
+    xlim = (-3.5, 3.1),
+    ylim = (0., 8.0),
+    xticks = ([-3, 0, 3], ["1e-3", "1e0", "1e3"]),
+    markercolor = :grey,
+    size = (1000, 400),
 
-    xlim = (-3.1, 3.1),
-    size = (420, 320),
-    xticks = ([-3, 0, 3], ["10<sup>-3</sup>", "10<sup>0</sup>", "10<sup>3</sup>"]),
-
-     markercolor = :grey
+    markersize = 10,
+    xtickfontsize = 18,
+    ytickfontsize = 22,
+    guidefontsize = 18
 )
 savefig(fig2c, "output/1C-identifiability-intervals-forest-plot.png")
 
-fig2c = scatter(x, y,
+fig2c = scatter(x, y;
     xerror = (xerr_left, xerr_right),
     yflip = true,
     legend = false,
     grid = false,
-    foreground_color_axis = :transparent,
-
-    yticks = (y, string.(intervals_df.parameter)),
-
-    tick_direction = :none,# remove tick marks
-
+    yforeground_color_axis = :transparent,
+    yticks = (y, ylabels),
+    ytick_direction = :none,# remove tick marks
     #xaxis = false,
-    markersize = 4,
     markerstrokewidth = 2,
-    tickfontsize = 12,
+    xlim = (-3.5, 3.1),
+    ylim = (0., 8.0),
+    xticks = ([-3, 0, 3], ["1e-3", "1e0", "1e3"]),
+    markercolor = [
+        :green, :green, :green, :green, :red, :green, :red,
+        :black, :black, :black, :black, :black, :black, :black,
+        :black, :black, :black, :black, :black, :black, :black,
+    ],
+    size = (1000, 400),
 
-    xlim = (-3.1, 3.1),
-    size = (420, 320),
-    xticks = ([-3, 0, 3], ["10<sup>-3</sup>", "10<sup>0</sup>", "10<sup>3</sup>"]),
-
-     markercolor = [:green, :green, :green, :green, :red, :red, :red, :red, :red, :red]
+    markersize = 10,
+    xtickfontsize = 18,
+    ytickfontsize = 22,
+    guidefontsize = 18
 )
 savefig(fig2c, "output/2C-identifiability-intervals-forest-plot.png")

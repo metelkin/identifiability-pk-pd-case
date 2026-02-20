@@ -28,7 +28,19 @@ params_opt = params_df.optimal
 
 # plot fitted vs synthetic
 res0 = sim(scn0; parameters = params_opt_pairs)
-fig0 = plot(res0, legend = false, grid = false)
+fig0 = plot(res0,
+    legend = false, 
+    grid = false,
+
+    xlim = (-5., 125.),
+    ylim = (-1., 21.),
+    xlabel = nothing,
+    ylabel = nothing,
+    grid = false,
+    markersize = 6,
+    tickfontsize = 13,
+    guidefontsize = 18
+)
 savefig(fig0, "output/1D-fitted-vs-synthetic.png")
 
 # prediction scenario
@@ -60,7 +72,18 @@ add_scenarios!(p, [:scn1 => scn1])
 
 # plot predicted
 res1 = sim(scn1; parameters = params_opt_pairs)
-fig1 = plot(res1, legend = false, grid = false)
+fig1 = plot(res1; 
+    legend = false, 
+    grid = false,
+    
+    xlim = (-5., 125.),
+    ylim = (-1., 21.),
+    xlabel = nothing,
+    ylabel = nothing,
+    markersize = 6,
+    tickfontsize = 13,
+    guidefontsize = 18
+)
 savefig(fig1, "output/1E-predicted.png")
 
 ### Analyze prediction bands ###
@@ -150,6 +173,10 @@ end
 CSV.write("output/prediction-bands.csv", prediction_bands_df; transform=(col, val) -> something(val, missing))
 
 ### Analyze prediction bands 2 ###
+time_points_2 = [
+    0.05, 0.1, 0.2, 0.5, 1., 2., 4., 8., 12., 18., 24.,
+    32., 40., 48., 56., 64., 72., 80., 88., 96., 104., 112., 120.,
+]
 
 # create scan function
 function scan_factory_2(time_point, output)
@@ -187,7 +214,7 @@ for out in [:drug_c, :pd_output_1]
     #out = :pd_output_1
     println("Calculating prediction bands for output: ", out, "\n")
 
-    for t_i in time_points
+    for t_i in time_points_2
         # t_i = 0.05
         println("\tCalculating interval for time point: ", t_i, "\n")
 

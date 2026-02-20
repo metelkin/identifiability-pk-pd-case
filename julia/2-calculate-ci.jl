@@ -12,13 +12,13 @@ scn0 = Scenario(m, (0., 120.); parameters = [
     :drug_c,
     :pd_output_1,
 ], events_save = (false, false))
-res0 = sim(scn0)
 add_scenarios!(p, [:scn0=>scn0])
 
-long_df = read_measurements("data/data-synthetic-known-sigma.csv", DataFrame)
-
 # add data to platform
+long_df = read_measurements("data/data-synthetic-known-sigma.csv", DataFrame)
 add_measurements!(p, long_df)
+
+res0 = sim(scn0)
 fig0 = plot(res0, legend = false, grid = false)
 savefig(fig0, "output/true-vs-synthetic.png")
 
@@ -38,14 +38,14 @@ to_fit = [
     #:sigma1 => 0.1,
     #:sigma2 => 0.1,
 ]
-res_optim = HetaSimulator.fit(p, to_fit) # 17.50
-res_optim = HetaSimulator.fit(p, optim(res_optim)) # 17.405
+res_optim = HetaSimulator.fit(p, to_fit) # 13.84
+res_optim = HetaSimulator.fit(p, optim(res_optim)) # 13.83
 params_optim = optim(res_optim)
 
-res0 = sim(p; parameters = params_optim) 
-fig0 = plot(res0, legend = false, grid = false)
-savefig(fig0, "output/1D-fitted-vs-synthetic.png")
-save_as_heta("data/fitted-params.heta", res_optim)
+res0 = sim(scn0; parameters = params_optim)
+fig0 = plot(res0)
+
+#save_as_heta("output/fitted-params.heta", res_optim)
 
 est = estimator(p, params_optim;
     alg = Rodas5P(), # AutoTsit5(Rosenbrock23()) Rodas5P() FBDF() or QNDF()  CVODE_BDF()
