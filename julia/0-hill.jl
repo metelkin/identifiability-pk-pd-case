@@ -14,12 +14,12 @@ x = drug_t_seq
 fig = plot(
     xscale = :log10,
     xlim = (1e-3, 1e4),
-    ylim = (0, 20),
+    ylim = (2, 20),
     legend = false,
     grid = false,
 
     markersize = 10,
-    #framestyle = :none
+    framestyle = :box,
     #xticks = nothing,
     #yticks = nothing
     formatter = _ -> ""
@@ -45,4 +45,4 @@ scatter!(fig, drug_t_exp, y_exp;
     color = :black
 )
 
-savefig("output/0-hill-curve.png")
+savefig("output/0-hill-curve-v2.png")
